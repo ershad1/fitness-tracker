@@ -1,11 +1,14 @@
 import {Injectable} from '@angular/core';
 import {Exercise} from './exercise.model';
+import {Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrainingService {
   private runningExercise: Exercise;
+
+  exerciseChanged = new Subject<Exercise>();
 
   availableExercise: Exercise[] = [
     {id: 'crunches', name: 'Crunches', duration: 30, calories: 8},
@@ -20,7 +23,11 @@ export class TrainingService {
 
   startExercise(selectedId: string) {
     this.runningExercise = this.availableExercise.find(ex => ex.id === selectedId);
+    this.exerciseChanged.next({...this.runningExercise});
   }
 
+  getRunningExercise() {
+    return {...this.runningExercise};
+  }
 
 }
