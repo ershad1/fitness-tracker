@@ -13,7 +13,7 @@ import {Exercise} from '../exercise.model';
 export class NewTrainingComponent implements OnInit , OnDestroy{
 
   exerciseSubscription: Subscription;
-  exercises: Exercise[];
+  exercises: any[];
 
   constructor(private trainingService: TrainingService, private db: AngularFirestore) {
   }
@@ -23,7 +23,7 @@ export class NewTrainingComponent implements OnInit , OnDestroy{
   ngOnInit() {
     // this.exercises = this.trainingService.getAvailableExercises();
     // this.exercises = this.db.collection('availableExercises').valueChanges();
-    this.exerciseSubscription = this.trainingService.exerciseChanged.subscribe(exercises => this.exercises = exercises);
+    this.exerciseSubscription = this.trainingService.exercisesChanged.subscribe(exercises => this.exercises = exercises);
     this.trainingService.fetchAvailableExercises();
   }
 

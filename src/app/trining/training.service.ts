@@ -11,7 +11,7 @@ export class TrainingService {
   private runningExercise: Exercise;
 
   exerciseChanged = new Subject<Exercise>();
-  exercisesChanged = new Subject<Exercise>();
+  exercisesChanged = new Subject<any>();
 
   availableExercise: Exercise[] = [];
 
@@ -24,21 +24,26 @@ export class TrainingService {
   //   return this.availableExercise.slice();
   // }
   fetchAvailableExercises() {
-    this.db
-      .collection('availableExercises')
-      .snapshotChanges().pipe(
-      map(docArray => docArray.map(doc => {
-        return {
-          id: doc.payload.doc.id,
-          name: doc.payload.doc.data().name,
-          duration: doc.payload.doc.data().duration,
-          calories: doc.payload.doc.data().calories,
-        };
+    this.db.collection('availableExercises')
+      .snapshotChanges()
+      .pipe(map( docArray => {
+        return docArray.map( doc => {
+          console.log(doc);
+          return(
+            {
+              id: doc.payload.doc.id,
+              name: doc.payload.doc.data()['name'],
+              duration: doc.payload.doc.data()['duration'],
+              calories: doc.payload.doc.data()['calories'],
+            }
+            // doc
+          );
+        });
       }))
-    ).subscribe((exercises: Exercise[]) => {
-      this.availableExercise = exercises;
-      this.exercisesChanged.next(...this.availableExercise);
-    });
+      .subscribe(exercices => {
+        this.availableExercise = exercices;
+        this.exercisesChanged.next([...this.availableExercise]);
+      });
   }
 
   startExercise(selectedId: string) {
