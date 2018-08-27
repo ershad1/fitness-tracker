@@ -11,7 +11,7 @@ export class TrainingService {
   private runningExercise: Exercise;
 
   exerciseChanged = new Subject<Exercise>();
-  exercisesChanged = new Subject<any>();
+  exercisesChanged = new Subject<Exercise[]>();
 
   availableExercise: Exercise[] = [];
 
@@ -26,10 +26,10 @@ export class TrainingService {
   fetchAvailableExercises() {
     this.db.collection('availableExercises')
       .snapshotChanges()
-      .pipe(map( docArray => {
-        return docArray.map( doc => {
+      .pipe(map(docArray => {
+        return docArray.map(doc => {
           console.log(doc);
-          return(
+          return (
             {
               id: doc.payload.doc.id,
               name: doc.payload.doc.data()['name'],

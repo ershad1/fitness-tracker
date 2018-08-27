@@ -10,10 +10,10 @@ import {Exercise} from '../exercise.model';
   templateUrl: './new-training.component.html',
   styleUrls: ['./new-training.component.scss']
 })
-export class NewTrainingComponent implements OnInit , OnDestroy{
+export class NewTrainingComponent implements OnInit, OnDestroy {
 
   exerciseSubscription: Subscription;
-  exercises: any[];
+  exercises: Exercise[];
 
   constructor(private trainingService: TrainingService, private db: AngularFirestore) {
   }
@@ -31,7 +31,7 @@ export class NewTrainingComponent implements OnInit , OnDestroy{
     this.trainingService.startExercise(form.value.exercise);
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.exerciseSubscription.unsubscribe();
   }
 }
