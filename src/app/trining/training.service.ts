@@ -3,6 +3,7 @@ import {Exercise} from './exercise.model';
 import {Subject, Subscription} from 'rxjs';
 import {AngularFirestore} from 'angularfire2/firestore';
 import {map} from 'rxjs/operators';
+import {UiService} from '../shared/service/ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,16 +19,11 @@ export class TrainingService {
 
   private fireBaseSubscription: Subscription[] = [];
 
-  // private finishedExercises: Exercise[] = [];
-
-
-  constructor(private db: AngularFirestore) {
+  constructor(private db: AngularFirestore, private uiService: UiService) {
   }
 
-  // getAvailableExercises() {
-  //   return this.availableExercise.slice();
-  // }
   fetchAvailableExercises() {
+    this.uiService.loadingStateChanged.next(true);
     this.fireBaseSubscription.push(this.db.collection('availableExercises')
       .snapshotChanges()
       .pipe(map(docArray => {
@@ -40,13 +36,17 @@ export class TrainingService {
               duration: doc.payload.doc.data()['duration'],
               calories: doc.payload.doc.data()['calories'],
             }
-            // doc
           );
         });
       }))
       .subscribe((exercices: Exercise[]) => {
+        this.uiService.loadingStateChanged.next(false);
         this.availableExercise = exercices;
         this.exercisesChanged.next([...this.availableExercise]);
+      }, error => {
+        this.uiService.loadingStateChanged.next(false);
+        this.exercisesChanged.next(null);
+        this.uiService.showSnackBar('Fetching exercises failed, please try again later', null, 3000);
       }));
   }
 
@@ -56,9 +56,6 @@ export class TrainingService {
   }
 
   completeExercise() {
-    // this.exercises.push({...this.runningExercise, date: new Date(), state: 'completed'});
-    // this.runningExercise = null;
-    // this.exerciseChanged.next(null);
     this.addDataToDatabase({
       ...this.runningExercise,
       date: new Date(),
@@ -89,7 +86,6 @@ export class TrainingService {
       .collection('finishedExercises')
       .valueChanges()
       .subscribe((exercises: Exercise[]) => {
-        // this.finishedExercises = exercises;
         this.finishedExercisesChanges.next(exercises);
       }));
   }

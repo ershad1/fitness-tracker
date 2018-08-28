@@ -18,9 +18,10 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadingSubscription = this.uiService.loadingStateChanged.subscribe( isLoading => {
-      this.isLoading = isLoading;
-    });
+    this.loadingSubscription = this.uiService.loadingStateChanged
+      .subscribe(isLoading => {
+        this.isLoading = isLoading;
+      });
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
   }
@@ -32,7 +33,8 @@ export class SignupComponent implements OnInit, OnDestroy {
     });
     // console.log(form);
   }
-  ngOnDestroy () {
+
+  ngOnDestroy() {
     this.loadingSubscription.unsubscribe();
   }
 
