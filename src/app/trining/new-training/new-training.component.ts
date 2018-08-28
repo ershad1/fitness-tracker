@@ -12,8 +12,8 @@ import {Exercise} from '../exercise.model';
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
 
-  exerciseSubscription: Subscription;
   exercises: Exercise[];
+  exerciseSubscription: Subscription;
 
   constructor(private trainingService: TrainingService, private db: AngularFirestore) {
   }
