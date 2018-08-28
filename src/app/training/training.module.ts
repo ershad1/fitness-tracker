@@ -14,10 +14,10 @@ import {TrainingRoutingModule} from './training-routing.module';
     NewTrainingComponent,
     PastTrainingComponent,
     StopTrainingComponent,
-    TrainingRoutingModule
   ],
   imports: [
-    SharedModule
+    SharedModule,
+    TrainingRoutingModule
   ],
   exports: [],
   entryComponents: [

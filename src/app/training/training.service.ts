@@ -28,7 +28,7 @@ export class TrainingService {
       .snapshotChanges()
       .pipe(map(docArray => {
         return docArray.map(doc => {
-          console.log(doc);
+          // console.log(doc);
           return (
             {
               id: doc.payload.doc.id,
