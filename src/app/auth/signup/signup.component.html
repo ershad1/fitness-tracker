@@ -1,5 +1,6 @@
 <section class="signup-form">
-  <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" autocomplete="off" #f="ngForm" (ngSubmit)="onSubmit(f)">
+  <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" autocomplete="off" #f="ngForm"
+        (ngSubmit)="onSubmit(f)">
     <mat-form-field>
       <input
         type="email"
@@ -46,7 +47,9 @@
 
     <mat-checkbox ngModel name="agree" required color="primary">Agree to terms and conditions.</mat-checkbox>
 
-    <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="f.invalid">Submit</button>
-    <mat-spinner *ngIf="isLoading"></mat-spinner>
+    <button *ngIf="!(isLoading$ | async)" type="submit" mat-raised-button color="primary" [disabled]="f.invalid">
+      Submit
+    </button>
+    <mat-spinner *ngIf="isLoading$ | async"></mat-spinner>
   </form>
 </section>
