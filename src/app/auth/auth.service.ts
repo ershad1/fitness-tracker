@@ -5,6 +5,8 @@ import {Subject} from 'rxjs';
 import {Router} from '@angular/router';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {TrainingService} from '../trining/training.service';
+import {MatSnackBar} from '@angular/material';
+import {UiService} from '../shared/service/ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,13 @@ export class AuthService {
   private user: User;
   private isAuthenticated = false;
 
-  constructor(private router: Router, private angularFireAuth: AngularFireAuth, private trainingService: TrainingService) {
+  constructor(
+    private router: Router,
+    private angularFireAuth: AngularFireAuth,
+    private trainingService: TrainingService,
+    private snackBar: MatSnackBar,
+    private uiService: UiService
+  ) {
   }
 
   initAuthListener() {
@@ -34,22 +42,39 @@ export class AuthService {
   }
 
   registerUser(authData: AuthData) {
+    this.uiService.loadingStateChanged.next(true);
+
     this.angularFireAuth.auth
       .createUserWithEmailAndPassword(
         authData.email,
         authData.password
       )
+      .then( () => {
+        this.uiService.loadingStateChanged.next(false);
+      })
       .catch(error => {
-        console.log(error);
+        this.uiService.loadingStateChanged.next(false);
+
+        this.snackBar.open(error.message, null, {
+          duration: 3000
+        });
       });
   }
 
   login(authData: AuthData) {
-    this.angularFireAuth.auth.signInWithEmailAndPassword(authData.email, authData.password).then(result => {
-      console.log(result);
-    })
+    this.uiService.loadingStateChanged.next(true);
+    this.angularFireAuth.auth
+      .signInWithEmailAndPassword(
+        authData.email,
+        authData.password)
+      .then(() => {
+        this.uiService.loadingStateChanged.next(false);
+      })
       .catch(error => {
-        console.log(error);
+        this.uiService.loadingStateChanged.next(false);
+        this.snackBar.open(error.message, null, {
+          duration: 3000
+        });
       });
   }
 
