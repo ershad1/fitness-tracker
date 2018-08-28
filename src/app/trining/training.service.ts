@@ -90,12 +90,12 @@ export class TrainingService {
       }));
   }
 
-  private addDataToDatabase(exercise: Exercise) {
-    this.db.collection('finishedExercises').add(exercise);
-  }
-
   cancelSubscription() {
     this.fireBaseSubscription.forEach(subscription => subscription.unsubscribe());
+  }
+
+  private addDataToDatabase(exercise: Exercise) {
+    this.db.collection('finishedExercises').add(exercise);
   }
 
 }

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../auth.service';
 import {UiService} from '../../shared/service/ui.service';
 import {Subscription} from 'rxjs';
@@ -14,18 +14,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   isLoading = false;
   loadingSubscription: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private uiService: UiService
   ) {
-  }
-
-  buildForm() {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-    });
   }
 
   get email() {
@@ -36,8 +30,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     return this.loginForm.get('password');
   }
 
+  buildForm() {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
+  }
+
   ngOnInit() {
-    this.loadingSubscription = this.uiService.loadingStateChanged.subscribe( isLoading => {
+    this.loadingSubscription = this.uiService.loadingStateChanged.subscribe(isLoading => {
       this.isLoading = isLoading;
     });
     this.buildForm();
@@ -51,8 +52,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     // console.log(this.loginForm);
   }
 
-  ngOnDestroy () {
-    this.loadingSubscription.unsubscribe();
+  ngOnDestroy() {
+    if (this.loadingSubscription) {
+      this.loadingSubscription.unsubscribe();
+    }
   }
 
 }
