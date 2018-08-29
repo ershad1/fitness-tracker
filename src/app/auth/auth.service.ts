@@ -9,15 +9,14 @@ import {UiService} from '../shared/service/ui.service';
 import {Store} from '@ngrx/store';
 import * as fromRoot from '../app.reducer';
 import * as UI from '../shared/ui.actions';
+import * as Auth from './auth.actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  authChange = new Subject<boolean>();
   private user: User;
-  private isAuthenticated = false;
 
   constructor(
     private router: Router,
@@ -31,14 +30,12 @@ export class AuthService {
   initAuthListener() {
     this.angularFireAuth.authState.subscribe(user => {
       if (user) {
-        this.isAuthenticated = true;
-        this.authChange.next(true);
+        this.store.dispatch(new Auth.SetAuthenticated());
         this.router.navigate(['/training']);
       } else {
         this.trainingService.cancelSubscription();
-        this.authChange.next(false);
+        this.store.dispatch(new Auth.SetUnauthenticated());
         this.router.navigate(['/login']);
-        this.isAuthenticated = false;
       }
     });
   }
@@ -86,7 +83,4 @@ export class AuthService {
     this.angularFireAuth.auth.signOut();
   }
 
-  isAuth() {
-    return this.isAuthenticated;
-  }
 }
